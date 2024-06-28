@@ -43,7 +43,7 @@ public class MMSQueueWithAbandon {
             Customer cust = new Customer(); // Nouveau client
             cust.arrivTime = Sim.time();
             cust.servTime = genServ.nextDouble();
-            cust.abandonTime = Sim.time() + genAbandon.nextDouble();
+            cust.abandonTime =  genAbandon.nextDouble();
             if (servList.size() < s) { // Démarre le service si un serveur est disponible
                 custWaits.add(0.0);
                 servList.addLast(cust);
@@ -51,7 +51,7 @@ public class MMSQueueWithAbandon {
             } else { // Rejoint la file d'attente
                 waitList.addLast(cust);
                 totWait.update(waitList.size());
-                new Abandonment(cust).schedule(cust.abandonTime - Sim.time());
+                new Abandonment(cust).schedule(cust.abandonTime);
             }
         }
     }
@@ -83,7 +83,8 @@ public class MMSQueueWithAbandon {
         }
 
         public void actions() {
-            if (waitList.remove(cust)) {
+            if (waitList.contains(cust)) {
+                waitList.remove(cust);
                 totWait.update(waitList.size());
             }
         }
